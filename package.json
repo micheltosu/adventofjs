@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "initDay": "node initDay.js"
+  },
   "dependencies": {
     "superagent": "^6.1.0"
   },
