@@ -1,3 +1,4 @@
+const fs = require('fs/promises');
 const fetcher = require('../advent-of-code-fetcher');
 
 (async () => {
@@ -10,7 +11,15 @@ const fetcher = require('../advent-of-code-fetcher');
     const paddedDay = day.padStart(2, '0');
     const dayPath = `${year}/D${paddedDay}`;
     console.log(`Initializing ${year} - Day ${paddedDay}`);
-    fetcher.saveInputFile(await fetcher.fetchInput(year, paddedDay), dayPath);
+    await fetcher.saveInputFile(await fetcher.fetchInput(year, paddedDay), dayPath);
 
-    
+    await fs.writeFile(`${dayPath}/task1.js`, `const {getInputForDay} = require('../../util/InputFetcher');
+
+async function main() {
+    const input = await (await getInputForDay('${year}','${paddedDay}')).split('\\n').map(val => Number(val));
+
+}
+
+main();
+    `, { flag: 'wx+'});
 })()
