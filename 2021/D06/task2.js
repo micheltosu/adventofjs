@@ -19,14 +19,9 @@ async function main() {
            };
         }
         fishes = newFishes;
-
     }
-    console.log(fishes);
     
-    let total = 0;
-    for (const count of fishes.values()) {
-        total += count;
-    }
+    const total = [...fishes.values()].reduce((acc, v) => acc + v);
     console.log(`Fishes count: ${total}`);
 }
 
