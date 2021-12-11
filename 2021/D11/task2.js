@@ -36,9 +36,6 @@ async function main() {
             while (flashes.length > 0) {
                 let [x,y] = flashes.shift();
                 const point = [x,y].join(',');
-                if(hasFlashed.has(point)) {
-                    continue;
-                }
     
                 hasFlashed.add(point);
                 flashCount += 1;
