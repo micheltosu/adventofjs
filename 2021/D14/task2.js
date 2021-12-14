@@ -12,34 +12,38 @@ async function main() {
 
     // Should try to do thiw with streams
     for (const i of Array(40)) {
-        // const infile = await fs.open(path + 'in', 'w+');
         const outfile = await fs.open(path + 'out', 'w+');
+        const polyfile = await fs.open(path + 'in', 'r');
         let polycount = 0;
         let totalPolyCount = 0;
-        const polyfile = await fs.open(path + 'in', 'r');
         let newPolymer = [];
         let readPos = 0;
-        let buffer = Buffer.alloc(1);
+        let buffer = Buffer.alloc(8192);
         let last = null;
 
-        while(await (await polyfile.read(buffer, 0, 1, readPos)).bytesRead != 0) {
-            readPos += 1;
-            
-            const current = buffer.toString();
-            const pair = [last, current].join('')
-            polycount += 1;
-            if (polycount > 2000) {
-                await outfile.appendFile(newPolymer.join(''), 'utf-8');
-                newPolymer = [];
-                totalPolyCount += polycount;
-                polycount = 0;
+        while(true) {
+            const readResult = await polyfile.read(buffer, 0, 8192, readPos);
+            if (readResult.bytesRead === 0) {
+                break;
+            }
+            let readString = buffer.toString().split('');
+            for( let i = 0; i < readResult.bytesRead; i++) {
+                readPos += 1;
+                const current = readString.shift();
+                const pair = [last, current].join('')
+                polycount += 1;
+    
+                if (rules.has(pair)) {
+                    newPolymer.push(rules.get(pair));
+                }
+                newPolymer.push(current);
+                last = current;
             }
 
-            if (rules.has(pair)) {
-                newPolymer.push(rules.get(pair));
-            }
-            newPolymer.push(current);
-            last = current;
+            await outfile.appendFile(newPolymer.join(''), 'utf-8');
+            newPolymer = [];
+            totalPolyCount += polycount;
+            polycount = 0;
         }
         
         totalPolyCount += polycount;
