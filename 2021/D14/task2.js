@@ -15,21 +15,23 @@ async function main() {
         // const infile = await fs.open(path + 'in', 'w+');
         const outfile = await fs.open(path + 'out', 'w+');
         let polycount = 0;
+        let totalPolyCount = 0;
         const polyfile = await fs.open(path + 'in', 'r');
         let newPolymer = [];
         let readPos = 0;
-        let buffer = new Int8Array();
+        let buffer = Buffer.alloc(1);
         let last = null;
-        while(await polyfile.read(buffer, 0, 1, readPos)) {
+
+        while(await (await polyfile.read(buffer, 0, 1, readPos)).bytesRead != 0) {
             readPos += 1;
             
-            const current = buffer[0];
+            const current = buffer.toString();
             const pair = [last, current].join('')
-            
             polycount += 1;
             if (polycount > 2000) {
                 await outfile.appendFile(newPolymer.join(''), 'utf-8');
                 newPolymer = [];
+                totalPolyCount += polycount;
                 polycount = 0;
             }
 
@@ -40,11 +42,12 @@ async function main() {
             last = current;
         }
         
+        totalPolyCount += polycount;
+        console.log(`Polycount: ${totalPolyCount}`);
         await outfile.appendFile(newPolymer.join(''), 'utf-8');
-        // await infile.close();
         await outfile.close();
+        await polyfile.close();
         await fs.cp(path + 'out', path + 'in', {force: true})
-        console.log(polymer.length);
     }
     console.log(polymer.length + " loop done");
 
