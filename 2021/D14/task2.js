@@ -10,16 +10,20 @@ async function main() {
 
     await fs.writeFile(path + 'in', polymer, {flag: 'w+', encoding: 'utf-8'});
 
-    
+    // Should try to do thiw with streams
     for (const i of Array(40)) {
         // const infile = await fs.open(path + 'in', 'w+');
         const outfile = await fs.open(path + 'out', 'w+');
         let polycount = 0;
-        polymer = await fs.readFile(path + 'in', 'utf-8');
-        let newPolymer = [polymer[0]];
-        for(let pos = 1; pos < polymer.length; pos++) {
-            const last = polymer[pos - 1];
-            const current = polymer[pos];
+        const polyfile = await fs.open(path + 'in', 'r');
+        let newPolymer = [];
+        let readPos = 0;
+        let buffer = new Int8Array();
+        let last = null;
+        while(await polyfile.read(buffer, 0, 1, readPos)) {
+            readPos += 1;
+            
+            const current = buffer[0];
             const pair = [last, current].join('')
             
             polycount += 1;
@@ -33,6 +37,7 @@ async function main() {
                 newPolymer.push(rules.get(pair));
             }
             newPolymer.push(current);
+            last = current;
         }
         
         await outfile.appendFile(newPolymer.join(''), 'utf-8');
