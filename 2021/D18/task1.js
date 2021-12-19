@@ -1,39 +1,59 @@
 const {getInputForDay} = require('../../util/InputFetcher');
-const fs = require('fs/promises');
-const { assert } = require('console');
-async function main() {
-    // const input = await (await getInputForDay('2021','18')).split('\n').map(val => Number(val));
-    const inputNumbers = (await fs.readFile('2021/D18/testinput.txt', {encoding: 'utf-8'}))
-        .split('\n');
-    
-    
-    console.log(inputNumbers);
 
+async function main() {
+    const inputNumbers = await (await getInputForDay('2021','18')).split('\n');
     let rawNumber = inputNumbers.shift();
 
-    rawNumber = ['[',rawNumber, inputNumbers.shift(), ']'].join('');
-
-    console.log(rawNumber);
-
-    let exploded;
-    let reduced;
-    do {
-        exploded = explode(rawNumber);
-        reduced = exploded;
-        rawNumber = reduced ?? rawNumber;
-
-    } while (exploded || reduced);
+    while (inputNumbers.length > 0) {
+        rawNumber = ['[',rawNumber, ',', inputNumbers.shift(), ']'].join('');
+        let exploded;
+        let reduced;
+        do {
+            exploded = explode(rawNumber);
+            reduced = exploded ?? reduce(rawNumber);
+            rawNumber = reduced ?? rawNumber;
     
+        } while (exploded || reduced);
+    }
 
-    console.log(rawNumber);
-    console.log(exploded);
+    // Calculate the magnitude 
+    while(rawNumber.includes('[')) {
+        let pairs = rawNumber.matchAll(/\[(\d+),(\d+)\]/g);
+        let newStr = rawNumber;
+        for (let pair of pairs) {
+            let magnitude = (pair[1] * 3) + (pair[2] * 2); 
+            newStr = newStr.replace(pair[0], magnitude);
+        }
+        rawNumber = newStr;
+    }
 
+    console.log('magnitude: ' + rawNumber);
+}
 
-    // const mappedNumbers = inputNumbers.map(str => str.split('')).map(n => parsePair(n));
-    // console.log(mappedNumbers);
+function reduce(str) {
+    let newStr = str;
+    const numbers = [];
+    const splitted = str.split('');
+    while (splitted.length > 0 ) {
+        const char = splitted[0];
+        if (Number.isInteger(parseInt(char))) {
+            numbers.push(readNumber(splitted));
+        } else {
+            splitted.shift();
+        }
+    }
 
-    // mappedNumbers.reduce((a,b) => addSnailNumber(a,b));
+    if (numbers.length === 0) {
+        return null;
+    }
 
+    for (const num of numbers) {
+        if (num >= 10) {
+            let replacement = ['[', Math.floor(num/2), ',', Math.ceil(num/2), ']'];
+            newStr = newStr.replace(num, replacement.join(''));
+            return newStr;
+        }
+    }   
 }
 
 function explode(rawNumber) {
@@ -103,58 +123,6 @@ function addToFirstInt(val, str) {
     const pos = str.indexOf(lastInt);
     const numWidth = num.length;
     return str.substring(0, pos) + (parseInt(lastInt) + parseInt(val)) + str.substring(pos + numWidth);
-
-}
-
-function reduce(number) {
-
-    findDepth(number, 0);
-}
-
-function findDepth(number, depth) {
-    
-    if (depth === 4) {
-        return true;
-    }
-
-    let left = findDepth(number.left, depth + 1);
-    if (left === true) {
-
-    }
-    let right = findDepth(number.right)
-
-}
-
-function addSnailNumber(a, b) {
-    const pair = [a, b];
-
-    return reduce(pair);
-}
-
-function parsePair(input) {
-    let pos = 0;
-    let left, right;
-
-    let peek = input[0];
-
-    if (peek === '[') {
-        input.shift();
-        left = parsePair(input);
-    } else {
-        return readNumber(input);
-    }
-
-    const next = input.shift();
-    assert(next === ',', 'Expected delimiter, got ' + next);
-
-    if (input[0] === '[') {
-        right = parsePair(input);
-    } else {
-        right = readNumber(input);
-    }
-    assert(input.shift() === ']', 'Expected closing of pair');
-    
-    return { left: left, right: right };
 
 }
 
