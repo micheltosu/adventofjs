@@ -6,9 +6,12 @@
     "superagent": "^6.1.0"
   },
   "devDependencies": {
+    "@types/node": "^18.11.11",
     "chai": "^4.3.4",
     "mocha": "^9.2.2",
     "nodemon": "^2.0.14",
-    "sinon": "^12.0.1"
+    "prettier": "^2.8.1",
+    "sinon": "^12.0.1",
+    "typescript": "^4.9.3"
   }
 }

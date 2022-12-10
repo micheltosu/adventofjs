@@ -1,5 +1,5 @@
 const fs = require('fs/promises');
-const fetcher = require('../advent-of-code-fetcher');
+const fetcher = require('../../advent-of-code-fetcher');
 
 (async () => {
     const [year, day] = process.argv.slice(2);
@@ -9,7 +9,7 @@ const fetcher = require('../advent-of-code-fetcher');
     }
 
     const paddedDay = day.padStart(2, '0');
-    const dayPath = `${year}/D${paddedDay}`;
+    const dayPath = `src/${year}/D${paddedDay}`;
     console.log(`Initializing ${year} - Day ${paddedDay}`);
     await fetcher.saveInputFile(await fetcher.fetchInput(year, paddedDay), dayPath);
 
