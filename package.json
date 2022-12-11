@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "initDay": "node initDay.js"
+    "initDay": "ts-node src/initDay.js"
   },
   "dependencies": {
     "superagent": "^6.1.0"
