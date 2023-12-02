@@ -16,16 +16,11 @@ async function main() {
                         .reduce((round, dice) => ({ ...round, ...dice }), {})
                 );
 
-
-
             return {
                 game: parseInt(game[0].split(' ')[1]),
                 rounds
             }
         });
-
-    console.log(games)
-
 
     const validGames = games
         .map(game => {
@@ -37,10 +32,8 @@ async function main() {
         })
         .filter(g => g.isValid)
 
-    console.log(validGames)
     const sumOfValidGames = validGames.reduce((acc, g) => acc + g.game, 0);
-    console.log(sumOfValidGames)
-    // console.log(`Sum of calculations ${batchSums}`);
+    console.log(`Sum of the valid game numbers: ${sumOfValidGames}`)
 }
 
 main();
