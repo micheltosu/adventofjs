@@ -33,6 +33,7 @@ async function main() {
         .filter(g => g.isValid)
 
     const sumOfValidGames = validGames.reduce((acc, g) => acc + g.game, 0);
+    if (sumOfValidGames !== 2447) throw "invalid answer"
     console.log(`Sum of the valid game numbers: ${sumOfValidGames}`)
 }
 
