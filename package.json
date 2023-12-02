@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "initDay": "ts-node src/initDay.js"
   },
