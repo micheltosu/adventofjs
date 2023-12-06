@@ -18,7 +18,11 @@ async function main() {
         }
     }
 
-    console.log(raceResults.map(results => results.length).reduce((sum, num) => sum * num));
+    const result = raceResults.map(results => results.length).reduce((sum, num) => sum * num);
+    if (result !== 293046) 
+        throw "incorrect result"
+
+    console.log(`${result} ways to win`)
 }
 
 main();
