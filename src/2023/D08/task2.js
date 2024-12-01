@@ -1,8 +1,7 @@
-const { default: cluster } = require('cluster');
 const {getInputForDay} = require('../../util/InputFetcher');
 
 async function main() {
-    const [movements, nodes] = (await getInputForDay('2023','08', 'test.txt')).split('\n\n');
+    const [movements, nodes] = (await getInputForDay('2023','08')).split('\n\n');
 
     const network = nodes.split('\n')
         .map(line => line.match(/(\w{3}) = \((\w{3}), (\w{3})\)/))

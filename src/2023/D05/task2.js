@@ -9,22 +9,25 @@ async function main() {
         const lines = g.split('\n');
 
         const [, source, destination] = new RegExp(/^(\w+)-to-(\w+).*/).exec(lines.shift())
-        acc[destination] = {
+        acc.push({
             source,
             destination,
             map: lines.map(l => l.split(' ').map(n => parseInt(n)))
-        }
+        });
 
         return acc;
-    }, {})
+    }, [])
 
     var minLocation = Number.MAX_VALUE
     seeds
         .forEach((s, idx, arr) => {
             const start = s;
             const end = start + arr.splice(idx + 1, 1)[0];
+            console.log(`testing start: ${start}, end ${end}`)
             for (var i = s; i < end; i++) {
-                minLocation = Math.min(mapSourceToDestination('seed', 'location', i, maps), minLocation)
+                const result = mapSourceToDestination('seed', 'location', i, maps) 
+                if (result < minLocation)
+                    minLocation = result;
             }
         }, [])
     
@@ -35,23 +38,17 @@ async function main() {
 
 main();
 
-function mapSourceToDestination(source, destination, value, map) {
+function mapSourceToDestination(source, destination, value, maps) {
     if (source === destination) {
         return value;
     }
 
-    const stack = [destination]
-    while (stack.at(-1) !== source) {
-        stack.push(map[stack.at(-1)].source);
+    var result = value;
+    for (const map of maps) {
+        result = translate(map, result)
     }
-    
-    var currentType = stack.pop()
-    var currentValue = value
-    while (currentType !== destination) {
-        currentValue = translate(Object.values(map).find(m => m.source === currentType), currentValue);
-        currentType = stack.pop()
-    }
-    return currentValue;
+
+    return result;
 }
     
 function translate(map, value) {

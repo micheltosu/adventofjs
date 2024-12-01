@@ -3,6 +3,7 @@
     "initDay": "ts-node src/initDay.js"
   },
   "dependencies": {
+    "cluster": "^0.7.7",
     "superagent": "^6.1.0"
   },
   "devDependencies": {
