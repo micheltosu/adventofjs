@@ -1,20 +1,26 @@
 import { getInputForDay } from '../../util/InputFetcher';
 
 async function main() {
-    const input = (await getInputForDay('2024', '02')).split('\n')
+    const path = process.argv.at(-1) === "test" ? 'test.txt' : "input.txt";
+    const input = (await getInputForDay('2024', '02', path)).split('\n')
         .map(line => line.split(' ').map(Number))
     console.log(input)
 
     var count = 0;
     for (const line of input) {
-        if (isSafe(line) || isSafe(line.slice(1), false))
+        if (isSafe(line) || withoutOne(line))
             count += 1;
     }
     console.log(count)
 }
 
+function withoutOne(report: number[]): boolean {
+    const results = report.map((value, idx) => isSafe([...report.slice(0, idx), ...report.slice(idx + 1)]));
+
+    return results.filter(r => r).length >= 1;
+}
+
 function isSafe(report: number[], safety: boolean = true): boolean {
-    var problemDammpener = safety;
 
     const [first, ...rest] = report;
     const isIncreasing = first < rest[0];
@@ -24,10 +30,6 @@ function isSafe(report: number[], safety: boolean = true): boolean {
         const diff = Math.abs(report - previous);
         const reportDecreasing = previous < report;
         if (isIncreasing !== reportDecreasing || !(diff > 0 && diff < 4)) {
-            if (problemDammpener) {
-                problemDammpener = false;
-                continue;
-            }
             return false;
 
         }
@@ -38,6 +40,6 @@ function isSafe(report: number[], safety: boolean = true): boolean {
 
 }
 
-// har gissat på 704, 762, 798, 708
+// har gissat på 698, 704, 762, 798, 708
 
 main();
