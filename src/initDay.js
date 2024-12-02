@@ -16,10 +16,11 @@ const fetcher = require('../../advent-of-code-fetcher');
     await fs.writeFile(`${dayPath}/task1.js`, `const {getInputForDay} = require('../../util/InputFetcher');
 
 async function main() {
-    const input = await (await getInputForDay('${year}','${paddedDay}')).split('\\n').map(val => Number(val));
+    const path = process.argv.at(-1) === "test" ? 'test.txt' : "input.txt";
+    const input = await (await getInputForDay('${year}','${paddedDay}', path)).split('\\n').map(val => Number(val));
 
 }
 
 main();
-    `, { flag: 'wx+'});
+    `, { flag: 'wx+' });
 })()
