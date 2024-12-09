@@ -23,12 +23,17 @@ async function main() {
 
     for (const freePos of freeSpace) {
         if (freePos >= memory.length) break;
-        var lastChar = memory.pop();
-        while (lastChar === '.') lastChar = memory.pop();
+        var pos = -1
+        var lastChar = memory.at(pos);
+        while (lastChar === '.') {
+            pos--;
+            lastChar = memory.at(pos);
+        }
         memory[freePos] = lastChar;
+        memory.splice(memory.length + pos, 1)
     }
 
-    console.log("checksum", hash(memory))
+    console.log("checksum", hash(memory.filter(e => e !== '.')))
 
 }
 
