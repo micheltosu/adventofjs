@@ -34,7 +34,7 @@ async function main() {
         tested.set(strPos + dir, score)
         const nextPos = addPos(pos, { x: direction[dir][0], y: direction[dir][1] });
 
-        if (!tested.has(toStr(nextPos) + dir) || tested.get(toStr(nextPos) + dir) >= score) {
+        if (!tested.has(toStr(nextPos) + dir) || tested.get(toStr(nextPos) + dir) >= score + 1) {
             searchQ.push({
                 dir,
                 pos: nextPos,
@@ -45,7 +45,7 @@ async function main() {
 
 
         const newDir = rotateCw(dir)
-        if (!tested.has(toStr(pos) + newDir) || tested.get(strPos + dir) > score + 1000)
+        if (!tested.has(toStr(pos) + newDir) || tested.get(toStr(pos) + newDir) >= score + 1000)
 
             searchQ.push({
                 dir: newDir,
@@ -56,7 +56,7 @@ async function main() {
 
 
         const newCCwDir = rotateCcw(dir)
-        if (!tested.has(toStr(pos) + newDir) || tested.get(strPos + dir) > score + 1000)
+        if (!tested.has(toStr(pos) + newCCwDir) || tested.get(toStr(pos) + newCCwDir) >= score + 1000)
 
             searchQ.push({
                 dir: newCCwDir,
