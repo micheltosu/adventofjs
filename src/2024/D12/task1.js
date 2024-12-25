@@ -48,18 +48,18 @@ class RegionNode {
 
     regionPerimeter(checked) {
         let perimeter = 0;
-        let updatedChecked = checked ? [...checked, this] : [this];
+        let updatedChecked = checked ? checked.add(this) : new Set([this]);
         for (const direction in this.neighbours) {
             if (!this.neighbours[direction]) {
                 perimeter += 1;
                 continue;
             }
-            if (updatedChecked.includes(this.neighbours[direction]))
+            if (updatedChecked.has(this.neighbours[direction]))
                 continue;
 
             const [neighbourPerimeter, neighbourChecked] = this.neighbours[direction].regionPerimeter(updatedChecked)
             perimeter += neighbourPerimeter;
-            updatedChecked = [...updatedChecked, ...neighbourChecked];
+            updatedChecked.add(...neighbourChecked);
         }
 
         if (checked)
@@ -70,16 +70,16 @@ class RegionNode {
 
     regionArea(checked) {
         let area = 1;
-        let updatedChecked = checked ? [...checked, this] : [this];
+        let updatedChecked = checked ? checked.add(this) : new Set([this]);
         for (const direction in this.neighbours) {
             if (!this.neighbours[direction])
                 continue;
-            if (updatedChecked.includes(this.neighbours[direction]))
+            if (updatedChecked.has(this.neighbours[direction]))
                 continue;
 
             const [neighbourArea, neighbourChecked] = this.neighbours[direction].regionArea(updatedChecked)
             area += neighbourArea;
-            updatedChecked = [...updatedChecked, ...neighbourChecked];
+            updatedChecked.add(...neighbourChecked);
         }
 
         if (checked)
