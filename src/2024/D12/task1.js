@@ -57,15 +57,10 @@ class RegionNode {
             if (updatedChecked.has(this.neighbours[direction]))
                 continue;
 
-            const [neighbourPerimeter, neighbourChecked] = this.neighbours[direction].regionPerimeter(updatedChecked)
-            perimeter += neighbourPerimeter;
-            updatedChecked.add(...neighbourChecked);
+            perimeter += this.neighbours[direction].regionPerimeter(updatedChecked)
         }
 
-        if (checked)
-            return [perimeter, updatedChecked];
-        else
-            return [perimeter]
+        return perimeter;
     }
 
     regionArea(checked) {
@@ -77,15 +72,11 @@ class RegionNode {
             if (updatedChecked.has(this.neighbours[direction]))
                 continue;
 
-            const [neighbourArea, neighbourChecked] = this.neighbours[direction].regionArea(updatedChecked)
-            area += neighbourArea;
-            updatedChecked.add(...neighbourChecked);
+            area += this.neighbours[direction].regionArea(updatedChecked)
+
         }
 
-        if (checked)
-            return [area, updatedChecked];
-        else
-            return [area]
+        return area;
     }
 
 }
@@ -132,12 +123,6 @@ async function main() {
     console.log("cost ", cost)
 
 }
-
-
-
-
-// Skriv räkna ihop funktionen.
-// Räkna ihop för varje region.
 
 function coordToKey(x, y) {
     return `${x},${y}`;
