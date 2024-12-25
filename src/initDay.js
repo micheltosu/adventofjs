@@ -17,7 +17,7 @@ const fetcher = require('../../advent-of-code-fetcher');
 
 async function main() {
     const path = process.argv.at(-1) === "test" ? 'test.txt' : "input.txt";
-    const input = await (await getInputForDay('${year}','${paddedDay}', path)).split('\\n').map(val => Number(val));
+    const input = (await getInputForDay('${year}','${paddedDay}', path)).split('\\n').map(val => Number(val));
 
 }
 
