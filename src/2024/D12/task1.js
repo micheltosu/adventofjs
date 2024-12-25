@@ -1,8 +1,6 @@
 const { getInputForDay } = require('../../util/InputFetcher');
 
 class RegionNode {
-
-
     constructor(x, y, value) {
         this.x = x;
         this.y = y;
@@ -48,6 +46,48 @@ class RegionNode {
         return added
     }
 
+    regionPerimeter(checked) {
+        let perimeter = 0;
+        let updatedChecked = checked ? [...checked, this] : [this];
+        for (const direction in this.neighbours) {
+            if (!this.neighbours[direction]) {
+                perimeter += 1;
+                continue;
+            }
+            if (updatedChecked.includes(this.neighbours[direction]))
+                continue;
+
+            const [neighbourPerimeter, neighbourChecked] = this.neighbours[direction].regionPerimeter(updatedChecked)
+            perimeter += neighbourPerimeter;
+            updatedChecked = [...updatedChecked, ...neighbourChecked];
+        }
+
+        if (checked)
+            return [perimeter, updatedChecked];
+        else
+            return [perimeter]
+    }
+
+    regionArea(checked) {
+        let area = 1;
+        let updatedChecked = checked ? [...checked, this] : [this];
+        for (const direction in this.neighbours) {
+            if (!this.neighbours[direction])
+                continue;
+            if (updatedChecked.includes(this.neighbours[direction]))
+                continue;
+
+            const [neighbourArea, neighbourChecked] = this.neighbours[direction].regionArea(updatedChecked)
+            area += neighbourArea;
+            updatedChecked = [...updatedChecked, ...neighbourChecked];
+        }
+
+        if (checked)
+            return [area, updatedChecked];
+        else
+            return [area]
+    }
+
 }
 
 async function main() {
@@ -65,17 +105,37 @@ async function main() {
     })
 
     var next = leftToScan.shift()
+    const regions = {}
     while (next) {
-        const currNode = nodes[coordToKey(next.x, next.y)];
+        const key = coordToKey(next.x, next.y)
+        const currNode = nodes[key];
+        regions[currNode.value] = [...(regions[currNode.value] ?? []), currNode]
         const added = currNode.addNeighbours(nodes);
         for (const { x: xx, y: yy } of added) {
             const removeNode = leftToScan.findIndex(({ x, y }) => xx === x && yy === y)
-            leftToScan.splice(removeNode, 1)
+            if (removeNode >= 0) {
+                leftToScan.splice(removeNode, 1)
+
+            }
         }
         next = leftToScan.shift()
     }
 
-} // Härnäst, lägg till en nod från varje region till en map. 
+    let cost = 0;
+    for (const node of Object.values(regions).flat()) {
+        const area = node.regionArea();
+        const perimeter = node.regionPerimeter();
+        console.log(node.x, node.y, node.value, area, perimeter, area * perimeter);
+        cost += (area * perimeter);
+    }
+
+    console.log("cost ", cost)
+
+}
+
+
+
+
 // Skriv räkna ihop funktionen.
 // Räkna ihop för varje region.
 
