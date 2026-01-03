@@ -8,11 +8,6 @@ async function main() {
         .at(0)
         .split("\n")
         .map((line) => line.split("-").map((x) => Number(x)));
-    // .forEach(([start, end]) => {
-    //     for (let i = start; i <= end; i++) {
-    //         freshIngredients.add(i);
-    //     }
-    // });
 
     console.log("ingredients in fresh list", freshIngredients);
 
